@@ -152,7 +152,6 @@ def main():
                     if event.attachments:
                         for attachment in event.attachments:
                             if attachment['type'] == 'photo':
-                                # Получаем URL самого большого фото
                                 sizes = attachment['photo']['sizes']
                                 if sizes:
                                     photo_url = sizes[-1]['url']
@@ -161,7 +160,6 @@ def main():
                     
                     # Если пользователь нажал "Пропустить фото"
                     if original_msg in ["пропустить фото", "⏩ пропустить фото"]:
-                        # Создаем объявление без фото
                         product_id = str(len(products) + 1)
                         products[product_id] = {
                             "id": product_id,
@@ -193,16 +191,13 @@ def main():
                     
                     # Если есть фото
                     elif has_photo and photo_url:
-                        # Скачиваем фото
                         temp_path = f"temp_photo_{user_id}.jpg"
                         if download_photo(photo_url, temp_path):
                             try:
-                                # Загружаем фото на сервер ВК
                                 photo_upload = upload.photo_messages(temp_path)[0]
                                 photo_attachment = f"photo{photo_upload['owner_id']}_{photo_upload['id']}"
                                 os.remove(temp_path)
                                 
-                                # Создаем объявление с фото
                                 product_id = str(len(products) + 1)
                                 products[product_id] = {
                                     "id": product_id,
@@ -257,10 +252,10 @@ def main():
                             user_id=event.user_id,
                             message="📸 Пожалуйста, отправьте ФОТО (одно фото)\n"
                                     "Или нажмите 'Пропустить фото'",
-                                    random_id=0,
-                                    keyboard=get_skip_keyboard().get_keyboard()
-                                )
-                                continue
+                            random_id=0,
+                            keyboard=get_skip_keyboard().get_keyboard()
+                        )
+                        continue
                 
                 # Шаг 5: Если пользователь нажал "Назад" во время добавления
                 elif msg == "◀️ назад" or original_msg == "◀️ назад":
@@ -310,7 +305,6 @@ def main():
                                   f"🆔 ID: {pid}\n\n" \
                                   f"Чтобы купить, напишите: Купить {pid}"
                         
-                        # Отправляем с фото, если оно есть
                         if product.get('photo'):
                             vk.messages.send(
                                 user_id=event.user_id,
@@ -329,7 +323,7 @@ def main():
                         vk.messages.send(
                             user_id=event.user_id,
                             message=f"📊 Всего объявлений: {len(active_products)}\n"
-                                    "Показаны последние 5. Используй поиск для других.",
+                                    "Показаны последние 5.",
                             random_id=0
                         )
                     
